@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Locust</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    @* optioneel: eigen css *@
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    @RenderSection("Head", required: false)
+</head>
+<body class="min-h-screen max-h-screen bg-gradient-to-br from-blue-50 to-purple-50 text-gray-900 flex flex-col">
+
+    <header class="sticky top-0 z-50 border-b border-white/20 bg-white/70 backdrop-blur">
+        <nav class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
+
+            <div class="flex items-center gap-2">
+                @* Dit toont Login/Register of Logout afhankelijk van user *@
+                <partial name="_LoginPartial" />
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="border-t border-white/20 bg-white/60">
+
+    </footer>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
