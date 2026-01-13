@@ -3,16 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\andor\\source\\repos\\Locust-frontend\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A9B8F69F-9427-FB3B-F77C-A9E2B7005A9E}|Locust.csproj|c:\\users\\andor\\source\\repos\\locust-frontend\\pages\\index.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A9B8F69F-9427-FB3B-F77C-A9E2B7005A9E}|Locust.csproj|solutionrelative:pages\\index.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A9B8F69F-9427-FB3B-F77C-A9E2B7005A9E}|Locust.csproj|c:\\users\\andor\\source\\repos\\locust-frontend\\pages\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{A9B8F69F-9427-FB3B-F77C-A9E2B7005A9E}|Locust.csproj|solutionrelative:pages\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A9B8F69F-9427-FB3B-F77C-A9E2B7005A9E}|Locust.csproj|c:\\users\\andor\\source\\repos\\locust-frontend\\viewmodels\\postviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A9B8F69F-9427-FB3B-F77C-A9E2B7005A9E}|Locust.csproj|solutionrelative:viewmodels\\postviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A9B8F69F-9427-FB3B-F77C-A9E2B7005A9E}|Locust.csproj|c:\\users\\andor\\source\\repos\\locust-frontend\\pages\\post.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A9B8F69F-9427-FB3B-F77C-A9E2B7005A9E}|Locust.csproj|solutionrelative:pages\\post.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -25,44 +21,33 @@
           "SelectedChildIndex": 1,
           "Children": [
             {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\andor\\source\\repos\\Locust-frontend\\Pages\\Index.cshtml",
               "RelativeDocumentMoniker": "Pages\\Index.cshtml",
               "ToolTip": "C:\\Users\\andor\\source\\repos\\Locust-frontend\\Pages\\Index.cshtml",
               "RelativeToolTip": "Pages\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAyAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-01-13T09:09:57.23Z",
-              "IsPinned": true,
+              "WhenOpened": "2026-01-13T14:29:47.499Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Index.cshtml.cs",
-              "DocumentMoniker": "C:\\Users\\andor\\source\\repos\\Locust-frontend\\Pages\\Index.cshtml.cs",
-              "RelativeDocumentMoniker": "Pages\\Index.cshtml.cs",
-              "ToolTip": "C:\\Users\\andor\\source\\repos\\Locust-frontend\\Pages\\Index.cshtml.cs",
-              "RelativeToolTip": "Pages\\Index.cshtml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAACYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-13T09:20:33.333Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "PostViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\andor\\source\\repos\\Locust-frontend\\ViewModels\\PostViewModel.cs",
-              "RelativeDocumentMoniker": "ViewModels\\PostViewModel.cs",
-              "ToolTip": "C:\\Users\\andor\\source\\repos\\Locust-frontend\\ViewModels\\PostViewModel.cs",
-              "RelativeToolTip": "ViewModels\\PostViewModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-13T13:07:20.88Z",
+              "DocumentIndex": 1,
+              "Title": "Post.cshtml",
+              "DocumentMoniker": "C:\\Users\\andor\\source\\repos\\Locust-frontend\\Pages\\Post.cshtml",
+              "RelativeDocumentMoniker": "Pages\\Post.cshtml",
+              "ToolTip": "C:\\Users\\andor\\source\\repos\\Locust-frontend\\Pages\\Post.cshtml",
+              "RelativeToolTip": "Pages\\Post.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-13T14:30:11.881Z",
               "EditorCaption": ""
             }
           ]

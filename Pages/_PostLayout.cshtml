@@ -1,0 +1,30 @@
+﻿@page
+@model _PostLayoutModel
+@{
+    var post = Model.Posts[1];
+}
+<div class="post mx-[500px] my-[50px] p-[10px] rounded-lg bg-slate-300">
+    <p class="text-3xl m-[20px]">@post.title</p>
+    <p class="text-xl m-[20px]">@post.text</p>
+    <div class="m-[20px] flex justify-between text-s">
+        <div>
+            <button>@post.likes</button>
+        </div>
+        <div>
+            <button>@post.comments</button>
+        </div>
+        <div>
+            <button>share</button>
+        </div>
+    </div>
+</div>
+<div class ="post mx-[500px] my-[50px] p-[10px] rounded-lg bg-slate-300">
+    @foreach (var comment in Model.Comments)
+    {
+        <div class="post m-[60px] p-[10px] rounded-lg bg-slate-400">
+            <p class="text-xl p-[10px]">@comment.username</p>
+            <p class="text-lg p-[10px]">@comment.text</p>
+            <button class="text-s p-[10px]">@comment.likes</button>
+        </div>
+    }
+</div>

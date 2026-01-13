@@ -5,19 +5,18 @@
 }
 
 @foreach (var post in Model.Posts)
-{
+{   
     <div class="post mx-[500px] my-[50px] p-[10px] rounded-lg bg-slate-300">
-        <p class="text-2xl m-[20px]">@post.title</p>
+        <a href="/Post">
+            <p class="text-2xl m-[20px]">@post.title</p>
+        </a>
         <p class="text-lg m-[20px]">@post.text</p>
         <div class="m-[20px] flex justify-between text-s">
             <div>
                 <button>@post.likes</button>
             </div>
             <div>
-                <button>@post.comments</button>
-            </div>
-            <div>
-                <button>share</button>
+                <a href="/Post">@post.comments</a>
             </div>
         </div>
     </div>
