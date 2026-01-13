@@ -1,69 +1,15 @@
 ﻿@page
 @model IndexModel
-@* @functions{
-    class Post
-    {
-        public string title;
-        public string text;
-        public int likes;
-        public int comments;
-
-        public Post(string postTitle, string postText, int postLikes, int postComments)
-        {
-            title = postTitle;
-            text = postText;
-            likes = postLikes;
-            comments = postComments;
-        }
-    }
-} *@
 @{
     ViewData["Title"] = "Home page";
-   
 }
-@* <script type="text/javascript">
-    function makeNewTag(tagType, content, classes){
-        const tag = document.createElement(tagType)
-        if(content != "null"){
-            const tagContent = document.createTextNode(content)
-            tag.appendChild(tagContent)
-        }
-        if(classes != "null"){
-            tag.classList = classes
-        }
-    }
-    function addElementButMine(postNumber) {
 
-        const mainDiv = makeNewTag("div", "null", "m-[200px] p-[10px] rounded-lg bg-slate-300");
-
-        const tagPostTitle = makeNewTag("p", "@Model.Posts[1].title", "text-2xl m-[20px]");
-        mainDiv.appendChild(tagPostTitle);
-
-        const tagPostText = makeNewTag("p", "@Model.Posts[1].text", "text-lg m-[20px]");
-        mainDiv.appendChild(tagPostText);
-
-        const buttonContainer = makeNewTag("div", "null", "m-[20px] flex justify-between text-xs");
-        const likeButton = makeNewTag("button", "@Model.Posts[1].likes", "null");
-        buttonContainer.appendChild(likeButton);
-        const commentButton = makeNewTag("button", "@Model.Posts[1].comments", "null");
-        buttonContainer.appendChild(commentButton);
-        const shareButton = makeNewTag("button", "share", "null");
-        buttonContainer.appendChild(shareButton)
-        mainDiv.appendChild(buttonContainer)
-
-        const currentDiv = document.getElementById("post1");
-        document.body.insertBefore(mainDiv, currentDiv);
-
-    }
-
-    addElementButMine(@Model.Posts.Length - 1);
-</script> *@
 @foreach (var post in Model.Posts)
 {
-    <div id="post1" class="m-[200px] p-[10px] rounded-lg bg-slate-300">
+    <div class="post mx-[500px] my-[50px] p-[10px] rounded-lg bg-slate-300">
         <p class="text-2xl m-[20px]">@post.title</p>
         <p class="text-lg m-[20px]">@post.text</p>
-        <div class="m-[20px] flex justify-between text-xs">
+        <div class="m-[20px] flex justify-between text-s">
             <div>
                 <button>@post.likes</button>
             </div>
@@ -71,7 +17,7 @@
                 <button>@post.comments</button>
             </div>
             <div>
-                @* <button onclick="addElement()">share</button> *@
+                <button>share</button>
             </div>
         </div>
     </div>
