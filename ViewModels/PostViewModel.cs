@@ -3,18 +3,19 @@
     public class PostViewModel
     {
         public string title;
-        public string text;
+        public string bodyText;
         public int likes;
         public int comments;
-        public int id;
+        public int postID;
+        public int userID;
 
         public PostViewModel(string postTitle, string postText, int postLikes, int postComments, int postId)
         {
             title = postTitle;
-            text = postText;
+            bodyText = postText;
             likes = postLikes;
             comments = postComments;
-            id = postId;
+            postID = postId;
         }
     }
 }
