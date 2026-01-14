@@ -453,7 +453,6 @@ C:\Users\andor\source\repos\Locust-frontend\bin\Debug\net10.0\Microsoft.EntityFr
 C:\Users\andor\source\repos\Locust-frontend\bin\Debug\net10.0\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Users\andor\source\repos\Locust-frontend\bin\Debug\net10.0\Microsoft.EntityFrameworkCore.SqlServer.dll
 C:\Users\andor\source\repos\Locust-frontend\bin\Debug\net10.0\Microsoft.Extensions.DependencyModel.dll
-C:\Users\andor\source\repos\Locust-frontend\bin\Debug\net10.0\Microsoft.Extensions.FileProviders.Embedded.dll
 C:\Users\andor\source\repos\Locust-frontend\bin\Debug\net10.0\Microsoft.Identity.Client.dll
 C:\Users\andor\source\repos\Locust-frontend\bin\Debug\net10.0\Microsoft.Identity.Client.Extensions.Msal.dll
 C:\Users\andor\source\repos\Locust-frontend\bin\Debug\net10.0\Microsoft.IdentityModel.Abstractions.dll
