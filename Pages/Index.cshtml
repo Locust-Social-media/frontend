@@ -1,5 +1,6 @@
 ﻿@page
 @model IndexModel
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
 @{
     ViewData["Title"] = "Home page";
     object place = new {};

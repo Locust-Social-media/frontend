@@ -1,12 +1,21 @@
-using Locust.NewFolder;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Hosting;
+using System.Security.Claims;
 
-namespace Locust.Pages
+[Authorize]
+public class IndexModel : PageModel
 {
-    public class IndexModel : PageModel
+    public string Email { get; private set; } = "";
+    public string RoleLabel { get; private set; } = "";
+
+    public void OnGet()
     {
+        Email = User.FindFirstValue(ClaimTypes.Email)
+            ?? User.Identity?.Name
+            ?? "onbekend";
+
+        // Role uit AUTH (claims), niet uit DB
+        RoleLabel = User.IsInRole("beheerder") ? "beheerder" : "gebruiker";
         public PostViewModel[] Posts { get; private set; }
         public void OnGet()
         {

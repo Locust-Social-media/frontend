@@ -1,0 +1,14 @@
+﻿## Build results
+[Bb]in/
+[Oo]bj/
+
+## Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Razor / build artifacts
+*.dll
+*.pdb
