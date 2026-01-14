@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Locust")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7ef0cd7c38c486fc3f9da9a525a99ed2bde104a5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+746cacd1a793761f84ceca87187f6c58e403542e")]
 [assembly: System.Reflection.AssemblyProductAttribute("Locust")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Locust")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
