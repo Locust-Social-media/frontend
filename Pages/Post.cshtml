@@ -1,7 +1,7 @@
 ﻿@page
 @model Locust.Pages._PostLayoutModel
 @{
-    var post = Model.Posts[1];
+    var post = Model.Posts[Model.Id];
 }
 <div class="post mx-[500px] my-[50px] p-[10px] rounded-lg bg-slate-300">
     <p class="text-3xl m-[20px]">@post.title</p>
