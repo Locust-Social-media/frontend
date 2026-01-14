@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using MySqlConnector;
+using Microsoft.Extensions.Configuration;
 
 namespace Locust.Areas.Identity.Pages.Account
 {
@@ -29,13 +31,15 @@ namespace Locust.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _config;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IConfiguration config)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -43,6 +47,7 @@ namespace Locust.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _config = config;
         }
 
         /// <summary>
@@ -100,59 +105,85 @@ namespace Locust.Areas.Identity.Pages.Account
         }
 
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
+            if (User?.Identity?.IsAuthenticated == true)
+                return Redirect("/Welkom");
+
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            return Page();
         }
+
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
+
+            if (!ModelState.IsValid)
+                return Page();
+
+            var hasher = new PasswordHasher<object>();
+            var hashedPassword = hasher.HashPassword(null, Input.Password);
+
+            var cs = _config.GetConnectionString("MySqlConnection");
+
+            await using var conn = new MySqlConnection(cs);
+            await conn.OpenAsync();
+            await using var tx = await conn.BeginTransactionAsync();
+
+            try
             {
-                var user = CreateUser();
-
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
-
-                if (result.Succeeded)
+                // 1) Insert (tijdelijke id, echte komt hierna)
+                await using (var cmd = new MySqlCommand(@"
+            INSERT INTO users (id, email, password, role)
+            VALUES ('TEMP', @email, @password, 'gebruiker');
+        ", conn, tx))
                 {
-                    _logger.LogInformation("User created a new account with password.");
-
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    cmd.Parameters.AddWithValue("@email", Input.Email);
+                    cmd.Parameters.AddWithValue("@password", hashedPassword);
+                    await cmd.ExecuteNonQueryAsync();
                 }
-                foreach (var error in result.Errors)
+
+                // 2) Auto increment nummer ophalen
+                long seq;
+                await using (var cmd2 = new MySqlCommand("SELECT LAST_INSERT_ID();", conn, tx))
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    seq = Convert.ToInt64(await cmd2.ExecuteScalarAsync());
                 }
+
+                // 3) Definitieve ID zetten
+                var newId = $"Loc_user_id_{seq}";
+                await using (var cmd3 = new MySqlCommand(@"
+            UPDATE users
+            SET id = @id
+            WHERE seq = @seq;
+        ", conn, tx))
+                {
+                    cmd3.Parameters.AddWithValue("@id", newId);
+                    cmd3.Parameters.AddWithValue("@seq", seq);
+                    await cmd3.ExecuteNonQueryAsync();
+                }
+
+                await tx.CommitAsync();
+
+                // Succes → naar login
+                return RedirectToPage("./Login", new { returnUrl });
             }
-
-            // If we got this far, something failed, redisplay form
-            return Page();
+            catch (MySqlException ex) when (ex.Number == 1062)
+            {
+                await tx.RollbackAsync();
+                ModelState.AddModelError(string.Empty, "Deze email is al geregistreerd.");
+                return Page();
+            }
+            catch
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
         }
+
+
 
         private IdentityUser CreateUser()
         {
