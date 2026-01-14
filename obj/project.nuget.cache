@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "hhvGa4g/ZKw=",
+  "dgSpecHash": "x8kxvkekSUw=",
   "success": true,
   "projectFilePath": "C:\\Users\\jevan\\source\\repos\\Locust\\frontend\\Locust.csproj",
   "expectedPackageFiles": [
@@ -109,7 +109,6 @@
     "C:\\Users\\jevan\\.nuget\\packages\\microsoft.visualstudio.web.codegeneration.utils\\10.0.1\\microsoft.visualstudio.web.codegeneration.utils.10.0.1.nupkg.sha512",
     "C:\\Users\\jevan\\.nuget\\packages\\microsoft.visualstudio.web.codegenerators.mvc\\10.0.1\\microsoft.visualstudio.web.codegenerators.mvc.10.0.1.nupkg.sha512",
     "C:\\Users\\jevan\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
-    "C:\\Users\\jevan\\.nuget\\packages\\mysqlconnector\\2.5.0\\mysqlconnector.2.5.0.nupkg.sha512",
     "C:\\Users\\jevan\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\jevan\\.nuget\\packages\\nuget.common\\6.12.1\\nuget.common.6.12.1.nupkg.sha512",
     "C:\\Users\\jevan\\.nuget\\packages\\nuget.configuration\\6.12.1\\nuget.configuration.6.12.1.nupkg.sha512",
