@@ -1,47 +1,59 @@
+using Locust.NewFolder;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using MySqlConnector;
 using System.Security.Claims;
 
-[Authorize]
-public class IndexModel : PageModel
+namespace Locust.Pages
 {
-    public string Email { get; private set; } = "";
-    public string RoleLabel { get; private set; } = "";
-
-    public void OnGet()
+    [Authorize]
+    public class IndexModel : PageModel
     {
-        Email = User.FindFirstValue(ClaimTypes.Email)
-            ?? User.Identity?.Name
-            ?? "onbekend";
+        private readonly IConfiguration _config;
 
-        // Role uit AUTH (claims), niet uit DB
-        RoleLabel = User.IsInRole("beheerder") ? "beheerder" : "gebruiker";
-        public PostViewModel[] Posts { get; private set; }
-        public void OnGet()
+        public IndexModel(IConfiguration config)
         {
-            Posts = [
-                new PostViewModel(
-                    "Test Title No 1", 
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", 
-                    1, 
-                    1, 
-                    0
-                ), 
-                new PostViewModel(
-                    "Test Title No 2", 
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", 
-                    999999999, 
-                    999999999, 
-                    1
-                ),
-                new PostViewModel(
-                    "Test Title No 3", 
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", 
-                    500, 
-                    30, 
-                    2
-                )
-            ];
+            _config = config;
+        }
+
+        public string Email { get; private set; } = "";
+        public string RoleLabel { get; private set; } = "";
+
+        public List<PostViewModel> Posts { get; private set; } = new();
+
+        public async Task OnGetAsync()
+        {
+            Email = User.FindFirstValue(ClaimTypes.Email)
+                ?? User.Identity?.Name
+                ?? "onbekend";
+
+            RoleLabel = User.IsInRole("beheerder") ? "beheerder" : "gebruiker";
+
+            var cs = _config.GetConnectionString("MySqlConnection");
+
+            await using var conn = new MySqlConnection(cs);
+            await conn.OpenAsync();
+
+            // Haal posts op (pas ORDER BY aan hoe jij wil)
+            await using var cmd = new MySqlCommand(@"
+                SELECT postID, title, bodyText, likes
+                FROM post
+                ORDER BY postID DESC
+                LIMIT 50;
+            ", conn);
+
+            await using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                Posts.Add(new PostViewModel
+                {
+                    PostID = reader.GetInt32("postID"),
+                    Title = reader.GetString("title"),
+                    BodyText = reader.GetString("bodyText"),
+                    Likes = reader.GetInt32("likes"),
+                    Comments = 0 // later vullen we dit met comments table
+                });
+            }
         }
     }
 }
