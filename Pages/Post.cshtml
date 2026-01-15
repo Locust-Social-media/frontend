@@ -22,8 +22,11 @@ else
         </div>
     </div>
 
-    <div class="post mx-[500px] my-[50px] p-[10px] rounded-lg bg-slate-300">
-        <p class="text-lg font-semibold m-[20px]">Comments (later)</p>
-        @* comments komen later *@
-    </div>
+    @foreach (var comment in Model.Comments)
+    {
+        <div class="comment mx-[500px] my-[10px] p-[10px] rounded-lg bg-slate-400">
+            <p class="text-xl p-[10px]">@comment.Username</p>
+            <p class="text-lg p-[10px]">@comment.BodyText</p>
+        </div>
+    }
 }
