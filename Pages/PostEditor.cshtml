@@ -1,0 +1,16 @@
+﻿@page
+@model Locust.Pages.PostEditorModel
+@{
+}
+<div class="mx-[500px] my-[50px] p-[20px] rounded-lg bg-slate-300">
+    <form class="flex justify-center flex-col text-center">
+        <p>Title:</p>
+        <input type="text" autocomplete="off" name="title" class="rounded-lg text-center focus:outline-none"/>
+        <p>Text:</p>
+        <textarea rows="10" autocomplete="off" autofocus="true" name="text" class="rounded-lg text-center focus:outline-none"></textarea>
+        <div class="mt-[10px] flex justify-between" >
+            <button class="p-[5px] rounded-lg bg-red-400">Delete post</button>
+            <button class="p-[5px] rounded-lg bg-sky-100">Upload post</button>
+        </div>
+    </form>
+</div>
