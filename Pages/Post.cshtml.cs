@@ -3,7 +3,9 @@ using Locust.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySqlConnector;
+using Newtonsoft.Json.Linq;
 using System.Data;
+using System.Text.Json.Nodes;
 
 namespace Locust.Pages
 {
@@ -22,6 +24,10 @@ namespace Locust.Pages
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            Random rng;
+
+            var jsonArray = JArray.Parse((new StreamReader("first-names.json")).ReadToEnd()).ToObject<string[]>();
+
             var cs = _config.GetConnectionString("MySqlConnection");
 
             await using var conn = new MySqlConnection(cs);
@@ -76,10 +82,14 @@ namespace Locust.Pages
                 return Page(); 
             }
 
+            string userTag = commentReader.GetString("users_id").TrimStart('L', 'o', 'c', '_', 'u', 's', 'e', 'r', '_', 'i', 'd', '_');
+            int userId = Int32.Parse(userTag);
+            rng = new Random(userId + id);
+
             Comments.Add(
                 new CommentViewModel
                 {
-                    Username = "Anonymous", //will be replaced with consistent random username
+                    Username = jsonArray[rng.Next(0, jsonArray.Length)],
                     BodyText = commentReader.GetString("text"),
                     Id = commentReader.GetInt32("idcomment"),
                     PostId = commentReader.GetInt32("postID")
@@ -88,10 +98,13 @@ namespace Locust.Pages
 
             while (await commentReader.ReadAsync())
             {
+                userTag = commentReader.GetString("users_id").TrimStart('L', 'o', 'c', '_', 'u', 's', 'e', 'r', '_', 'i', 'd', '_');
+                userId = Int32.Parse(userTag);
+                rng = new Random(userId + id);
                 Comments.Add(
                     new CommentViewModel
                     {
-                        Username = "Anonymous", //will be replaced with consistent random username
+                        Username = jsonArray[rng.Next(0, jsonArray.Length)],
                         BodyText = commentReader.GetString("text"),
                         Id = commentReader.GetInt32("idcomment"),
                         PostId = commentReader.GetInt32("postID")
