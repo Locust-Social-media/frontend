@@ -1,0 +1,15 @@
+﻿@page
+@model Locust.Pages.CommentCreatorModel
+@{
+}
+<div class="mx-[500px] my-[50px] p-[20px] rounded-lg bg-slate-300">
+    <form class="flex justify-center flex-col text-center" method="post">
+        <input type="hidden" name="postId" value="@Model.idPost"/>
+        <p>comment:</p>
+        <textarea rows="10" autocomplete="off" autofocus="true" name="bodyText" class="rounded-lg text-center focus:outline-none"></textarea>
+        <div class="mt-[10px] flex justify-between" >
+            <button href="/Index" class="p-[5px] rounded-lg bg-red-400">Delete comment</button>
+            <button type="submit" class="p-[5px] rounded-lg bg-sky-100">Upload comment</button>
+        </div>
+    </form>
+</div>

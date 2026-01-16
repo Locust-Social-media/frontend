@@ -36,7 +36,7 @@ namespace Locust.Pages
 
             // Haal posts op (pas ORDER BY aan hoe jij wil)
             await using var cmd = new MySqlCommand(@"
-                SELECT postID, title, bodyText, likes
+                SELECT postID, title, bodyText
                 FROM post
                 ORDER BY postID DESC
                 LIMIT 50;
@@ -50,7 +50,7 @@ namespace Locust.Pages
                     PostID = reader.GetInt32("postID"),
                     Title = reader.GetString("title"),
                     BodyText = reader.GetString("bodyText"),
-                    Likes = reader.GetInt32("likes"),
+                    Likes = 0,
                     Comments = 0 // later vullen we dit met comments table
                 });
             }

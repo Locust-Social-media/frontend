@@ -34,7 +34,7 @@ namespace Locust.Pages
             await conn.OpenAsync();
 
             await using var cmd = new MySqlCommand(
-                @"SELECT postID, title, bodyText, likes, userID
+                @"SELECT postID, title, bodyText, users_id
                 FROM post
                 WHERE postID = @id
                 LIMIT 1;", 
@@ -55,10 +55,10 @@ namespace Locust.Pages
                 PostID = reader.GetInt32("postID"),
                 Title = reader.GetString("title"),
                 BodyText = reader.GetString("bodyText"),
-                Likes = reader.GetInt32("likes")
+                Likes = 0
             };
 
-            string op = reader.GetString("userID");
+            string op = reader.GetString("users_id");
 
             var csComments = _config.GetConnectionString("MySqlConnection");
 
