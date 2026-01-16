@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySqlConnector;
 using Newtonsoft.Json.Linq;
 using System.Data;
+using System.Security.Claims;
 using System.Text.Json.Nodes;
 
 namespace Locust.Pages
@@ -84,6 +85,7 @@ namespace Locust.Pages
                 return Page(); 
             }
 
+            string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
             string userTagFull = commentReader.GetString("users_id");
             string userTag = userTagFull.TrimStart('L', 'o', 'c', '_', 'u', 's', 'e', 'r', '_', 'i', 'd', '_');
             int userId = Int32.Parse(userTag);
@@ -97,6 +99,10 @@ namespace Locust.Pages
             else
             {
                 opState = "";
+            }
+            if(userTagFull == currentUser)
+            {
+                opState = opState + " [You]";
             }
 
                 Comments.Add(
@@ -124,7 +130,10 @@ namespace Locust.Pages
                 {
                     opState = "";
                 }
-
+                if (userTagFull == currentUser)
+                {
+                    opState = opState + " [You]";
+                }
                 Comments.Add(
                     new CommentViewModel
                     {

@@ -16,6 +16,11 @@ namespace Locust.Pages
 
         public int idPost;
 
+        public async Task OnGetAsync(int postId)
+        {
+            idPost = postId;
+        }
+
         public async Task<IActionResult> OnPostAsync(int postId, string bodyText)
         {
             idPost = postId;
@@ -34,7 +39,7 @@ namespace Locust.Pages
                 cmd.Parameters.AddWithValue("@userId", userId);
                 cmd.Parameters.AddWithValue("@postId", postId);
                 await cmd.ExecuteNonQueryAsync();
-                return RedirectToPage("/Post/" + postId.ToString());
+                return RedirectToPage("/Post", new { id = postId });
             }
             else
             {
