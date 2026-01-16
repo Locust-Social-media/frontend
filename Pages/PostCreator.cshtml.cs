@@ -36,7 +36,6 @@ namespace Locust.Pages
             }
             else
             {
-                Console.WriteLine("haha loser");
                 return Page();
             }
         }
