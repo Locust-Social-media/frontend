@@ -1,24 +1,32 @@
-﻿@page
+﻿@page "{id:int}"
 @model Locust.Pages._PostLayoutModel
+
 @{
-    var post = Model.Posts[Model.Id];
+    var post = Model.Post;
 }
-<div class="post mx-[500px] my-[50px] p-[10px] rounded-lg bg-slate-300">
-    <p class="text-3xl m-[20px]">@post.title</p>
-    <p class="text-xl m-[20px]">@post.text</p>
-    <div class="m-[20px] flex justify-between text-s">
-        <div>
-            <button>@post.likes</button>
+
+@if (post is null)
+{
+    <p>Post niet gevonden.</p>
+}
+else
+{
+    <div class="post mx-[500px] my-[50px] p-[10px] rounded-lg bg-slate-300">
+        <p class="text-3xl m-[20px]">@post.Title</p>
+        <p class="text-xl m-[20px]">@post.BodyText</p>
+
+        <div class="m-[20px] flex justify-between text-s">
+            <div>
+                <button>@post.Likes</button>
+            </div>
         </div>
     </div>
-</div>
-<div class ="post mx-[500px] my-[50px] p-[10px] rounded-lg bg-slate-300">
+
     @foreach (var comment in Model.Comments)
     {
-        <div class="post m-[60px] p-[10px] rounded-lg bg-slate-400">
-            <p class="text-xl p-[10px]">@comment.username</p>
-            <p class="text-lg p-[10px]">@comment.text</p>
-            <button class="text-s p-[10px]">@comment.likes</button>
+        <div class="comment mx-[500px] my-[10px] p-[10px] rounded-lg bg-slate-400">
+            <p class="text-xl p-[10px]">@comment.Username</p>
+            <p class="text-lg p-[10px]">@comment.BodyText</p>
         </div>
     }
-</div>
+}

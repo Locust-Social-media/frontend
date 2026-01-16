@@ -2,72 +2,118 @@ using Locust.NewFolder;
 using Locust.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Build.Tasks.Deployment.Bootstrapper;
-using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
+using Newtonsoft.Json.Linq;
+using System.Data;
+using System.Text.Json.Nodes;
 
 namespace Locust.Pages
 {
     public class _PostLayoutModel : PageModel
-    {   
-        public int Id { get; set; }
-        public PostViewModel[] Posts { get; private set; }
-        public CommentViewModel[] Comments { get; private set; }
-        public void OnGet(int id)
+    {
+        private readonly IConfiguration _config;
+
+        public _PostLayoutModel(IConfiguration config)
         {
+            _config = config;
+        }
 
-            Id = id;
+        public PostViewModel? Post { get; private set; }
 
-            //this is temporary data and will be fetched from the database in the future
-            Comments = [
-                new CommentViewModel(
-                    "Name goes here 1",
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                    123,
-                    0
-                ),
-                new CommentViewModel(
-                    "Name goes here 1",
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                    123,
-                    0
-                ),
-                new CommentViewModel(
-                    "Name goes here 2",
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                    123,
-                    1
-                ),
-                new CommentViewModel(
-                    "Name goes here 3",
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                    123,
-                    2
-                )
-            ];
+        public List<CommentViewModel> Comments { get; private set; } = new();
 
-            Posts = [
-                new PostViewModel(
-                    "Test Title No 1",
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                    1,
-                    1,
-                    0
-                ),
-                new PostViewModel(
-                    "Test Title No 2",
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                    999999999,
-                    999999999,
-                    1
-                ),
-                new PostViewModel(
-                    "Test Title No 3",
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                    500,
-                    30,
-                    2
-                )
-            ];
+        public async Task<IActionResult> OnGetAsync(int id)
+        {
+            Random rng;
+
+            var jsonArray = JArray.Parse((new StreamReader("first-names.json")).ReadToEnd()).ToObject<string[]>();
+
+            var cs = _config.GetConnectionString("MySqlConnection");
+
+            await using var conn = new MySqlConnection(cs);
+            await conn.OpenAsync();
+
+            await using var cmd = new MySqlCommand(
+                @"SELECT postID, title, bodyText, likes
+                FROM post
+                WHERE postID = @id
+                LIMIT 1;", 
+                conn
+            );
+
+            cmd.Parameters.AddWithValue("@id", id);
+
+            await using var reader = await cmd.ExecuteReaderAsync();
+
+            if (!await reader.ReadAsync())
+            {
+                return NotFound(); // of Redirect/een nette pagina
+            }
+
+            Post = new PostViewModel
+            {
+                PostID = reader.GetInt32("postID"),
+                Title = reader.GetString("title"),
+                BodyText = reader.GetString("bodyText"),
+                Likes = reader.GetInt32("likes")
+            };
+
+            var csComments = _config.GetConnectionString("MySqlConnection");
+
+            await using var connComments = new MySqlConnection(csComments);
+            await connComments.OpenAsync();
+
+            await using var cmdComments = new MySqlCommand(
+                @"SELECT idcomment, text, users_id, postID
+                FROM comment
+                WHERE postID = @id
+                ",
+                connComments
+            );
+
+            cmdComments.Parameters.AddWithValue("@id", id);
+
+            await using var commentReader = await cmdComments.ExecuteReaderAsync();
+
+            if (!await commentReader.ReadAsync())
+            {
+                Comments = [];
+                Console.WriteLine("failed");
+                return Page(); 
+            }
+
+            string userTag = commentReader.GetString("users_id").TrimStart('L', 'o', 'c', '_', 'u', 's', 'e', 'r', '_', 'i', 'd', '_');
+            int userId = Int32.Parse(userTag);
+            rng = new Random(userId + id);
+
+            Comments.Add(
+                new CommentViewModel
+                {
+                    Username = jsonArray[rng.Next(0, jsonArray.Length)],
+                    BodyText = commentReader.GetString("text"),
+                    Id = commentReader.GetInt32("idcomment"),
+                    PostId = commentReader.GetInt32("postID")
+                }
+            );
+
+            while (await commentReader.ReadAsync())
+            {
+                userTag = commentReader.GetString("users_id").TrimStart('L', 'o', 'c', '_', 'u', 's', 'e', 'r', '_', 'i', 'd', '_');
+                userId = Int32.Parse(userTag);
+                rng = new Random(userId + id);
+                Comments.Add(
+                    new CommentViewModel
+                    {
+                        Username = jsonArray[rng.Next(0, jsonArray.Length)],
+                        BodyText = commentReader.GetString("text"),
+                        Id = commentReader.GetInt32("idcomment"),
+                        PostId = commentReader.GetInt32("postID")
+                    }
+                );
+            }
+
+
+            return Page();
         }
     }
 }
