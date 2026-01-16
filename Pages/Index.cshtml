@@ -4,7 +4,7 @@
 
 @foreach (var post in Model.Posts)
 {
-    <div class="post mx-[500px] my-[50px] p-[10px] rounded-lg bg-slate-300">
+    <div class="post mx-[500px] my-[20px] p-[10px] rounded-lg bg-slate-300">
         <a asp-page="/Post" asp-route-id="@post.PostID">
             <p class="text-2xl m-[20px]">@post.Title</p>
         </a>
@@ -13,11 +13,7 @@
 
         <div class="m-[20px] flex justify-between text-s">
             <div>
-                <button>@post.Likes</button>
-            </div>
-
-            <div>
-                <a asp-page="/Post" asp-route-id="@post.PostID">@post.Comments</a>
+                <a asp-page="/CommentCreator" asp-route-postId="@post.PostID">Place a comment!</a>
             </div>
         </div>
     </div>

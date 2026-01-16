@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySqlConnector;
 using Newtonsoft.Json.Linq;
 using System.Data;
+using System.Security.Claims;
 using System.Text.Json.Nodes;
 
 namespace Locust.Pages
@@ -34,7 +35,7 @@ namespace Locust.Pages
             await conn.OpenAsync();
 
             await using var cmd = new MySqlCommand(
-                @"SELECT postID, title, bodyText, likes
+                @"SELECT postID, title, bodyText, users_id
                 FROM post
                 WHERE postID = @id
                 LIMIT 1;", 
@@ -55,8 +56,10 @@ namespace Locust.Pages
                 PostID = reader.GetInt32("postID"),
                 Title = reader.GetString("title"),
                 BodyText = reader.GetString("bodyText"),
-                Likes = reader.GetInt32("likes")
+                Likes = 0
             };
+
+            string op = reader.GetString("users_id");
 
             var csComments = _config.GetConnectionString("MySqlConnection");
 
@@ -82,29 +85,59 @@ namespace Locust.Pages
                 return Page(); 
             }
 
-            string userTag = commentReader.GetString("users_id").TrimStart('L', 'o', 'c', '_', 'u', 's', 'e', 'r', '_', 'i', 'd', '_');
+            string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userTagFull = commentReader.GetString("users_id");
+            string userTag = userTagFull.TrimStart('L', 'o', 'c', '_', 'u', 's', 'e', 'r', '_', 'i', 'd', '_');
             int userId = Int32.Parse(userTag);
             rng = new Random(userId + id);
 
-            Comments.Add(
-                new CommentViewModel
-                {
-                    Username = jsonArray[rng.Next(0, jsonArray.Length)],
-                    BodyText = commentReader.GetString("text"),
-                    Id = commentReader.GetInt32("idcomment"),
-                    PostId = commentReader.GetInt32("postID")
-                }
-            );
-
-            while (await commentReader.ReadAsync())
+            string opState = "";
+            if(userTagFull == op)
             {
-                userTag = commentReader.GetString("users_id").TrimStart('L', 'o', 'c', '_', 'u', 's', 'e', 'r', '_', 'i', 'd', '_');
-                userId = Int32.Parse(userTag);
-                rng = new Random(userId + id);
+                opState = " [OP]";
+            }
+            else
+            {
+                opState = "";
+            }
+            if(userTagFull == currentUser)
+            {
+                opState = opState + " [You]";
+            }
+
                 Comments.Add(
                     new CommentViewModel
                     {
-                        Username = jsonArray[rng.Next(0, jsonArray.Length)],
+                        Username = jsonArray[rng.Next(0, jsonArray.Length)] + opState,
+                        BodyText = commentReader.GetString("text"),
+                        Id = commentReader.GetInt32("idcomment"),
+                        PostId = commentReader.GetInt32("postID")
+                    }
+                );
+
+            while (await commentReader.ReadAsync())
+            {
+                userTagFull = commentReader.GetString("users_id");
+                userTag = userTagFull.TrimStart('L', 'o', 'c', '_', 'u', 's', 'e', 'r', '_', 'i', 'd', '_');
+                userId = Int32.Parse(userTag);
+                rng = new Random(userId + id);
+
+                if (userTagFull == op)
+                {
+                    opState = " [OP]";
+                }
+                else
+                {
+                    opState = "";
+                }
+                if (userTagFull == currentUser)
+                {
+                    opState = opState + " [You]";
+                }
+                Comments.Add(
+                    new CommentViewModel
+                    {
+                        Username = jsonArray[rng.Next(0, jsonArray.Length)] + opState,
                         BodyText = commentReader.GetString("text"),
                         Id = commentReader.GetInt32("idcomment"),
                         PostId = commentReader.GetInt32("postID")
