@@ -1,0 +1,33 @@
+﻿@using System.Security.Claims
+
+@if (User?.Identity?.IsAuthenticated == true)
+{
+    <div class="flex items-center gap-4">
+        <span class="text-gray-700">
+            Welkom <span class="font-semibold">@User.FindFirstValue(ClaimTypes.Email)</span>
+            (<span class="text-sm">@((User.IsInRole("beheerder")) ? "beheerder" : "gebruiker")</span>)
+        </span>
+
+        <form method="post" asp-area="Identity" asp-page="/Account/Logout" class="inline">
+            <button type="submit"
+                    class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition">
+                Logout
+            </button>
+        </form>
+        <a href="/PostCreator" class="px-4 py-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg text-white">Create a new post</a>
+    </div>
+}
+else
+{
+    <div class="flex items-center gap-4">
+        <a asp-area="Identity" asp-page="/Account/Login"
+           class="text-blue-600 hover:text-blue-700 font-medium">
+            Login
+        </a>
+
+        <a asp-area="Identity" asp-page="/Account/Register"
+           class="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transition">
+            Register
+        </a>
+    </div>
+}

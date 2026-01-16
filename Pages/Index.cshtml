@@ -1,0 +1,20 @@
+﻿@page
+@model IndexModel
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
+@foreach (var post in Model.Posts)
+{
+    <div class="post mx-[500px] my-[20px] p-[10px] rounded-lg bg-slate-300">
+        <a asp-page="/Post" asp-route-id="@post.PostID">
+            <p class="text-2xl m-[20px]">@post.Title</p>
+        </a>
+
+        <p class="text-lg m-[20px]">@post.BodyText</p>
+
+        <div class="m-[20px] flex justify-between text-s">
+            <div>
+                <a asp-page="/CommentCreator" asp-route-postId="@post.PostID">Place a comment!</a>
+            </div>
+        </div>
+    </div>
+}

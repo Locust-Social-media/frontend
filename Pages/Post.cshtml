@@ -1,0 +1,29 @@
+﻿@page "{id:int}"
+@model Locust.Pages._PostLayoutModel
+
+@{
+    var post = Model.Post;
+}
+
+@if (post is null)
+{
+    <p>Post niet gevonden.</p>
+}
+else
+{
+    <div class="post mx-[500px] my-[50px] p-[10px] rounded-lg bg-slate-300">
+        <p class="text-3xl m-[20px]">@post.Title</p>
+        <p class="text-xl m-[20px]">@post.BodyText</p>
+
+        <div class="m-[20px] flex justify-between text-s">
+        </div>
+    </div>
+
+    @foreach (var comment in Model.Comments)
+    {
+        <div class="comment mx-[500px] my-[10px] p-[10px] rounded-lg bg-slate-400">
+            <p class="text-xl p-[10px]">@comment.Username</p>
+            <p class="text-lg p-[10px]">@comment.BodyText</p>
+        </div>
+    }
+}
