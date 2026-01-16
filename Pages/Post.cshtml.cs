@@ -34,7 +34,7 @@ namespace Locust.Pages
             await conn.OpenAsync();
 
             await using var cmd = new MySqlCommand(
-                @"SELECT postID, title, bodyText, likes
+                @"SELECT postID, title, bodyText, likes, userID
                 FROM post
                 WHERE postID = @id
                 LIMIT 1;", 
@@ -57,6 +57,8 @@ namespace Locust.Pages
                 BodyText = reader.GetString("bodyText"),
                 Likes = reader.GetInt32("likes")
             };
+
+            string op = reader.GetString("userID");
 
             var csComments = _config.GetConnectionString("MySqlConnection");
 
@@ -82,29 +84,51 @@ namespace Locust.Pages
                 return Page(); 
             }
 
-            string userTag = commentReader.GetString("users_id").TrimStart('L', 'o', 'c', '_', 'u', 's', 'e', 'r', '_', 'i', 'd', '_');
+            string userTagFull = commentReader.GetString("users_id");
+            string userTag = userTagFull.TrimStart('L', 'o', 'c', '_', 'u', 's', 'e', 'r', '_', 'i', 'd', '_');
             int userId = Int32.Parse(userTag);
             rng = new Random(userId + id);
 
-            Comments.Add(
-                new CommentViewModel
-                {
-                    Username = jsonArray[rng.Next(0, jsonArray.Length)],
-                    BodyText = commentReader.GetString("text"),
-                    Id = commentReader.GetInt32("idcomment"),
-                    PostId = commentReader.GetInt32("postID")
-                }
-            );
-
-            while (await commentReader.ReadAsync())
+            string opState = "";
+            if(userTagFull == op)
             {
-                userTag = commentReader.GetString("users_id").TrimStart('L', 'o', 'c', '_', 'u', 's', 'e', 'r', '_', 'i', 'd', '_');
-                userId = Int32.Parse(userTag);
-                rng = new Random(userId + id);
+                opState = " [OP]";
+            }
+            else
+            {
+                opState = "";
+            }
+
                 Comments.Add(
                     new CommentViewModel
                     {
-                        Username = jsonArray[rng.Next(0, jsonArray.Length)],
+                        Username = jsonArray[rng.Next(0, jsonArray.Length)] + opState,
+                        BodyText = commentReader.GetString("text"),
+                        Id = commentReader.GetInt32("idcomment"),
+                        PostId = commentReader.GetInt32("postID")
+                    }
+                );
+
+            while (await commentReader.ReadAsync())
+            {
+                userTagFull = commentReader.GetString("users_id");
+                userTag = userTagFull.TrimStart('L', 'o', 'c', '_', 'u', 's', 'e', 'r', '_', 'i', 'd', '_');
+                userId = Int32.Parse(userTag);
+                rng = new Random(userId + id);
+
+                if (userTagFull == op)
+                {
+                    opState = " [OP]";
+                }
+                else
+                {
+                    opState = "";
+                }
+
+                Comments.Add(
+                    new CommentViewModel
+                    {
+                        Username = jsonArray[rng.Next(0, jsonArray.Length)] + opState,
                         BodyText = commentReader.GetString("text"),
                         Id = commentReader.GetInt32("idcomment"),
                         PostId = commentReader.GetInt32("postID")
